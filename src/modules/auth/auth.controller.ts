@@ -1,15 +1,15 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { LoginDto } from '../user/dto/login.dto';
 import { User } from '../user/entities/user.entity';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private userService: UserService) {}
+  constructor(private authService: AuthService) {}
   @Post('sign-up')
   async create(@Body() createUserDto: User) {
     try {
-      const userCandidate = await this.userService.create(createUserDto);
+      const userCandidate = await this.authService.signUp(createUserDto);
       return {
         message: 'User created',
         data: userCandidate,
@@ -22,7 +22,7 @@ export class AuthController {
   @Post('sign-in')
   async signIn(@Body() loginDto: LoginDto) {
     try {
-      const { access_token } = await this.userService.login(loginDto);
+      const { access_token } = await this.authService.signIn(loginDto);
 
       return {
         message: 'Login available',
