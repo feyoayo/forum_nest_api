@@ -9,7 +9,7 @@ const config = {
   username: 'andrew',
   password: '',
   database: 'forum',
-  synchronize: false,
+  synchronize: true,
   migrationsTableName: '',
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],

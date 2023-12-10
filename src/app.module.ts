@@ -1,27 +1,17 @@
+import { AuthModule } from './modules/auth/auth.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ForumModule } from './forum/forum.module';
+import { ForumModule } from './modules/forum/forum.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/entities/user.entity';
-import { UserModule } from './user/user.module';
+import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'andrew',
-    //   password: '',
-    //   database: 'forum',
-    //   entities: [User],
-    //   synchronize: true,
-    //   migrations: [],
-    //   migrationsTableName: '',
-    // }),
+    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],

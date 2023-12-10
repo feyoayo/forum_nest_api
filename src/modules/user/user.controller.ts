@@ -7,29 +7,20 @@ import {
   Param,
   Delete,
   HttpException,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { LoginDto } from './dto/login.dto';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async create(@Body() createUserDto: User) {
-    try {
-      const userCandidate = await this.userService.create(createUserDto);
-      return {
-        message: 'User created',
-        data: userCandidate,
-      };
-    } catch (e) {
-      throw new HttpException(e.message, 400);
-    }
-  }
-
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
