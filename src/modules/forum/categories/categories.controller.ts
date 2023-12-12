@@ -2,22 +2,29 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpException,
   Param,
   Patch,
-  Post,
+  Post, UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import {AuthGuard} from "../../auth/auth.guard";
 
 @Controller('categories123')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+    try {
+      this.categoriesService.create(createCategoryDto);
+    } catch (e) {
+      console.log(e)
+      throw new HttpException(e.message, 400)
+    }
   }
 
   @Get()

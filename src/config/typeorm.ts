@@ -1,12 +1,11 @@
-import { registerAs } from '@nestjs/config';
-import { config as dotenvConfig } from 'dotenv';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import {registerAs} from '@nestjs/config';
+import {DataSource, DataSourceOptions} from 'typeorm';
 
 const config = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
-  username: 'andrew',
+  username: 'andrew_home_coding',
   password: '',
   database: 'forum',
   synchronize: true,
