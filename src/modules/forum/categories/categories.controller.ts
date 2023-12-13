@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -62,6 +63,31 @@ export class CategoriesController {
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.categoriesService.update(+id, updateCategoryDto);
+  }
+
+  @Put(':id/archive')
+  async archive(@Param('id') id: string) {
+    try {
+      await this.categoriesService.toggleArchivation(+id, true);
+
+      return {
+        message: 'Success',
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @Put(':id/unarchive')
+  async unarchive(@Param('id') id: string) {
+    try {
+      await this.categoriesService.toggleArchivation(+id, false);
+      return {
+        message: 'Success',
+      };
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Delete(':id')

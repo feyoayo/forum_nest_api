@@ -12,10 +12,10 @@ class BaseListUtils {
   private defaultListFields: Record<string, boolean>;
 
   public setDefaultListFields(fields: string) {
-    this.defaultListFields = fields?.split(',').reduce((acc, field) => {
-      acc[field] = true;
-      return acc;
-    }, {});
+    // this.defaultListFields = fields?.split(',').reduce((acc, field) => {
+    //   acc[field] = true;
+    //   return acc;
+    // }, {});
   }
 
   public getFieldsToSelect(fields) {
@@ -72,5 +72,12 @@ export class CategoriesService extends BaseListUtils {
 
   remove(id: number) {
     return `This action removes a #${id} category`;
+  }
+
+  async toggleArchivation(id: number, isArchived: boolean) {
+    return await this.categoryRepository.update(
+      { id },
+      { is_archived: isArchived },
+    );
   }
 }
