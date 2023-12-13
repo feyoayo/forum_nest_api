@@ -1,0 +1,6 @@
+const REQUEST_DEFAULT_PARAMS = {
+  LIMIT: 25,
+  PAGE: 1,
+};
+
+export default REQUEST_DEFAULT_PARAMS;

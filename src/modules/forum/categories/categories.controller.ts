@@ -2,17 +2,21 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpException,
+  Get,
+  HttpException,
   Param,
   Patch,
-  Post, UseGuards,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import {AuthGuard} from "../../auth/auth.guard";
+import { AuthGuard } from '../../auth/auth.guard';
+import { ListRequestParams } from '../../../types/request.types';
 
-@Controller('categories123')
+@Controller('forum/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
@@ -20,21 +24,36 @@ export class CategoriesController {
   @UseGuards(AuthGuard)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     try {
-      this.categoriesService.create(createCategoryDto);
+      const categoryCandidate =
+        this.categoriesService.create(createCategoryDto);
+      return {
+        message: 'Category created',
+        data: categoryCandidate,
+      };
     } catch (e) {
-      console.log(e)
-      throw new HttpException(e.message, 400)
+      console.log(e);
+      throw new HttpException(e.message, 400);
     }
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@Query() queryParams: ListRequestParams) {
+    try {
+      return this.categoriesService.findAll(queryParams);
+    } catch (e) {
+      console.log(e);
+      throw new HttpException(e.message, 400);
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+    try {
+      return this.categoriesService.findOne(+id);
+    } catch (e) {
+      console.log(e);
+      throw new HttpException(e.message, 400);
+    }
   }
 
   @Patch(':id')

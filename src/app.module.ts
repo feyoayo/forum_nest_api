@@ -11,6 +11,7 @@ import typeorm from './config/typeorm';
 @Module({
   imports: [
     AuthModule,
+    ForumModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],
