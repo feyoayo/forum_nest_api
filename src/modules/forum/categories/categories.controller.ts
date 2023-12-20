@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -16,21 +17,22 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthGuard } from '../../auth/auth.guard';
 import { ListRequestParams } from '../../../types/request.types';
+import { BaseController } from '../../../common/base-controller';
+import { Category } from './entities/category.entity';
 
 @Controller('forum/categories')
-export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+export class CategoriesController extends BaseController {
+  constructor(private readonly categoriesService: CategoriesService) {
+    super();
+  }
 
-  @Post()
   @UseGuards(AuthGuard)
+  @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     try {
       const categoryCandidate =
         this.categoriesService.create(createCategoryDto);
-      return {
-        message: 'Category created',
-        data: categoryCandidate,
-      };
+      return this.ok(categoryCandidate);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);
@@ -38,9 +40,10 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll(@Query() queryParams: ListRequestParams) {
+  async findAll(@Query() queryParams: ListRequestParams) {
     try {
-      return this.categoriesService.findAll(queryParams);
+      const categories = await this.categoriesService.findAll(queryParams);
+      return this.response<Category[]>(categories);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);
@@ -48,15 +51,17 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     try {
-      return this.categoriesService.findOne(+id);
+      const category = await this.categoriesService.findOne(+id);
+      return this.response<Category>(category);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);
     }
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -65,6 +70,7 @@ export class CategoriesController {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id/archive')
   async archive(@Param('id') id: string) {
     try {
@@ -78,6 +84,7 @@ export class CategoriesController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id/unarchive')
   async unarchive(@Param('id') id: string) {
     try {
@@ -90,8 +97,16 @@ export class CategoriesController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  async remove(@Res() res, @Param('id') id: string) {
+    try {
+      await this.categoriesService.remove(+id);
+      return {
+        message: 'Success',
+      };
+    } catch (e) {
+      throw new HttpException(e.message, 400);
+    }
   }
 }
