@@ -1,3 +1,5 @@
+import { HttpException } from '@nestjs/common';
+
 export abstract class BaseController {
   ok<T>(data: T) {
     return {
@@ -11,10 +13,8 @@ export abstract class BaseController {
       data: data,
     };
   }
-  error(message: string) {
-    return {
-      status: 'error',
-      message: message,
-    };
+  error(error: unknown, message: string) {
+    console.log(error);
+    throw new HttpException({ status: 'error', message: message }, 400);
   }
 }
