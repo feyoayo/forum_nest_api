@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Topic } from '../../forum/topics/entities/topic.entity';
+import { TopicsView } from '../../forum/topics_views/entities/topics_view.entity';
 
 export enum UserRole {
   user = 'USER',
@@ -24,4 +32,14 @@ export class User {
 
   @Column({ type: 'boolean', default: true })
   is_active: boolean;
+
+  @OneToMany(() => Topic, (topic) => topic.user)
+  @JoinColumn()
+  topics: Topic[];
+
+  @OneToMany(() => TopicsView, (topicsView) => topicsView.user, {
+    cascade: true,
+  })
+  @JoinColumn()
+  topics_views: TopicsView[];
 }

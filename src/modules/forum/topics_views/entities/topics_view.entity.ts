@@ -3,8 +3,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../../user/entities/user.entity';
@@ -18,11 +16,11 @@ export class TopicsView {
   @Column({ nullable: true })
   ip_address: string;
 
-  @OneToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Topic, (topic) => topic.id, { nullable: false })
+  @ManyToOne(() => Topic, (topic) => topic.topic_views, { nullable: false })
   @JoinColumn({ name: 'topic_id' })
   topic: Topic;
 

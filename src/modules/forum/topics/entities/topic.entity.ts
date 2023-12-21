@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
@@ -32,18 +31,20 @@ export class Topic {
   })
   updated_at: Date;
 
-  @OneToOne(() => Category, (category) => category.id, {
+  @ManyToOne(() => Category, (category) => category.topics, {
     nullable: false,
-    cascade: true,
   })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, (user) => user.topics, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => TopicsView, (topicsView) => topicsView, { cascade: true })
+  @OneToMany(() => TopicsView, (topicsView) => topicsView.topic, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'topic_views' })
   topic_views: TopicsView[];
 }

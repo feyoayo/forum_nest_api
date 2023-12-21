@@ -3,7 +3,6 @@ import { CreateTopicsViewDto } from './dto/create-topics_view.dto';
 import { TopicsView } from './entities/topics_view.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TopicsService } from '../topics/topics.service';
 import { Topic } from '../topics/entities/topic.entity';
 
 @Injectable()
@@ -18,6 +17,9 @@ export class TopicsViewsService {
     try {
       await this.topicsViewRepository.save({
         ip_address: createTopicsViewDto.ip_address,
+        user: {
+          id: createTopicsViewDto.user_id,
+        },
         topic: {
           id: createTopicsViewDto.topic_id,
         },

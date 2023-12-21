@@ -17,7 +17,7 @@ export class TopicsService {
       return await this.topicRepository.save({
         body,
         title,
-        user_id: { id: user_id },
+        user: { id: user_id },
         category: { id: category_id },
       });
     } catch (e) {
@@ -32,8 +32,10 @@ export class TopicsService {
   async findOne(id: number) {
     const topicCandidate = await this.topicRepository.findOne({
       where: { id },
-      relations: ['category', 'user', 'topic_views'],
+      relations: ['user', 'topic_views'],
     });
+
+    delete topicCandidate.user.password;
 
     if (!topicCandidate) throw new Error('Topic not found');
 

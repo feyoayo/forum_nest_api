@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -28,7 +27,7 @@ export class Category {
   @Column({ type: 'boolean', default: false })
   is_archived: boolean;
 
-  @OneToMany(() => Topic, (topic) => topic.category)
+  @OneToMany(() => Topic, (topic) => topic.category, { cascade: true })
   @JoinColumn({ name: 'topics' })
   topics: Topic[];
 }

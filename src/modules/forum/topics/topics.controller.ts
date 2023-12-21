@@ -29,9 +29,13 @@ export class TopicsController extends BaseController {
 
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Body() createTopicDto: CreateTopicDto) {
+  async create(@Req() req: Request, @Body() createTopicDto: CreateTopicDto) {
     try {
-      const newTopic = await this.topicsService.create(createTopicDto);
+      const user = req['user'];
+      const newTopic = await this.topicsService.create({
+        ...createTopicDto,
+        user_id: user.uid,
+      });
       return this.ok<Topic>(newTopic);
     } catch (error) {
       throw new HttpException(error.message, 400);
