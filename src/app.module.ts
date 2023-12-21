@@ -7,11 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
+import { TokenModule } from './common/token/token.module';
 
 @Module({
   imports: [
-    AuthModule,
-    ForumModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],
@@ -21,7 +20,8 @@ import typeorm from './config/typeorm';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
-
+    TokenModule,
+    AuthModule,
     ForumModule,
     UserModule,
   ],

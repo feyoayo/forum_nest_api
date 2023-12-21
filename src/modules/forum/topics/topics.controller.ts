@@ -5,6 +5,7 @@ import {
   HttpException,
   Param,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { TopicsService } from './topics.service';
@@ -12,10 +13,17 @@ import { CreateTopicDto } from './dto/create-topic.dto';
 import { BaseController } from '../../../common/base-controller';
 import { Topic } from './entities/topic.entity';
 import { AuthGuard } from '../../auth/auth.guard';
+import { TopicsViewsService } from '../topics_views/topics_views.service';
+import { Request } from 'express';
+import { TokenService } from '../../../common/token/token.service';
 
 @Controller('forum/topics')
 export class TopicsController extends BaseController {
-  constructor(private readonly topicsService: TopicsService) {
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly topicsViewsService: TopicsViewsService,
+    private readonly topicsService: TopicsService,
+  ) {
     super();
   }
 
@@ -41,7 +49,15 @@ export class TopicsController extends BaseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Req() req: Request, @Param('id') id: string) {
+    const tokenData = this.tokenService.decodeTokenData(req);
+
+    await this.topicsViewsService.recordView({
+      user_id: tokenData?.uid ?? null,
+      topic_id: +id,
+      ip_address: req.ip,
+    });
+
     return this.topicsService.findOne(+id);
   }
 

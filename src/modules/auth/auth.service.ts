@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import * as  R from 'ramda'
+import * as R from 'ramda';
 
 const SALT_ROUNDS = 8;
 
@@ -40,9 +40,7 @@ export class AuthService {
     return this.userRepository.save(userPayload);
   }
   async signIn(loginDto: LoginDto) {
-
-    if(R.isEmpty(loginDto)) throw new Error('No data provided')
-
+    if (R.isEmpty(loginDto)) throw new Error('No data provided');
 
     const { email, password } = loginDto;
 
@@ -61,7 +59,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: userCandidate.id, username: userCandidate.nickname };
+    const payload = { uid: userCandidate.id, username: userCandidate.nickname };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

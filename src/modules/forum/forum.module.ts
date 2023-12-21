@@ -1,17 +1,9 @@
 import { Module } from '@nestjs/common';
 import { CategoriesModule } from './categories/categories.module';
-import { CategoriesService } from './categories/categories.service';
 import { TopicsModule } from './topics/topics.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from './categories/entities/category.entity';
-import { Topic } from './topics/entities/topic.entity';
+import { TopicsViewsModule } from './topics_views/topics_views.module';
 
 @Module({
-  imports: [
-    CategoriesModule,
-    TopicsModule,
-    TypeOrmModule.forFeature([Category, Topic]),
-  ],
-  providers: [CategoriesService],
+  imports: [CategoriesModule, TopicsModule, TopicsViewsModule],
 })
 export class ForumModule {}

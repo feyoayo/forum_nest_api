@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Topic } from '../../topics/entities/topic.entity';
 
 @Entity()
 export class Category {
@@ -19,4 +27,8 @@ export class Category {
 
   @Column({ type: 'boolean', default: false })
   is_archived: boolean;
+
+  @OneToMany(() => Topic, (topic) => topic.category)
+  @JoinColumn({ name: 'topics' })
+  topics: Topic[];
 }

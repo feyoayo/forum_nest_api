@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { Topic } from './entities/topic.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,10 +11,18 @@ export class TopicsService {
     private readonly topicRepository: Repository<Topic>,
   ) {}
   async create(createTopicDto: CreateTopicDto) {
-    const newTopic = await this.topicRepository.save(createTopicDto);
-
-    //Add validation: title should be unique for current category
-    return newTopic;
+    try {
+      const { category_id, body, user_id, title } = createTopicDto;
+      //Add validation: title should be unique for current category
+      return await this.topicRepository.save({
+        body,
+        title,
+        user_id: { id: user_id },
+        category: { id: category_id },
+      });
+    } catch (e) {
+      throw new HttpException(e.message, 400);
+    }
   }
 
   findAll() {
@@ -24,6 +32,7 @@ export class TopicsService {
   async findOne(id: number) {
     const topicCandidate = await this.topicRepository.findOne({
       where: { id },
+      relations: ['category', 'user', 'topic_views'],
     });
 
     if (!topicCandidate) throw new Error('Topic not found');
