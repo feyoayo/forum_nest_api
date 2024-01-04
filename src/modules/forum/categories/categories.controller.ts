@@ -19,8 +19,9 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { ListRequestParams } from '../../../types/request.types';
 import { BaseController } from '../../../common/base-controller';
 import { Category } from './entities/category.entity';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('forum/categories')
 @Controller('forum/categories')
 export class CategoriesController extends BaseController {
   constructor(private readonly categoriesService: CategoriesService) {
