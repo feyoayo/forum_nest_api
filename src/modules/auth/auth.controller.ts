@@ -2,12 +2,13 @@ import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { LoginDto } from '../user/dto/login.dto';
 import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('sign-up')
-  async create(@Body() createUserDto: User) {
+  async create(@Body() createUserDto: SignUpDto) {
     try {
       const userCandidate = await this.authService.signUp(createUserDto);
       return {

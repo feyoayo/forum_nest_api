@@ -19,6 +19,7 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { ListRequestParams } from '../../../types/request.types';
 import { BaseController } from '../../../common/base-controller';
 import { Category } from './entities/category.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('forum/categories')
 export class CategoriesController extends BaseController {
@@ -27,12 +28,13 @@ export class CategoriesController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     try {
       const categoryCandidate =
         this.categoriesService.create(createCategoryDto);
-      return this.ok(categoryCandidate);
+      return this.created(categoryCandidate);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);
@@ -43,7 +45,7 @@ export class CategoriesController extends BaseController {
   async findAll(@Query() queryParams: ListRequestParams) {
     try {
       const categories = await this.categoriesService.findAll(queryParams);
-      return this.response<Category[]>(categories);
+      return this.ok<Category[]>(categories);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);
@@ -54,7 +56,7 @@ export class CategoriesController extends BaseController {
   async findOne(@Param('id') id: string) {
     try {
       const category = await this.categoriesService.findOne(+id);
-      return this.response<Category>(category);
+      return this.ok<Category>(category);
     } catch (e) {
       console.log(e);
       throw new HttpException(e.message, 400);

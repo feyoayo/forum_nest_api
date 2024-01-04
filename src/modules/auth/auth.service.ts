@@ -10,6 +10,8 @@ import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as R from 'ramda';
+import { SignUpDto } from './dto/sign-up.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 const SALT_ROUNDS = 8;
 
@@ -25,21 +27,21 @@ export class AuthService {
     return this.userRepository.findOneBy({ email });
   }
 
-  async signUp(createUserDto: User) {
+  async signUp(createUserDto: SignUpDto) {
     if (await this.isEmailExist(createUserDto.email)) {
       throw new Error('user exist');
     }
 
     const userPassword = await hash(createUserDto.password, SALT_ROUNDS);
 
-    const userPayload: User = {
+    const userPayload = {
       ...createUserDto,
       password: userPassword,
     };
 
     return this.userRepository.save(userPayload);
   }
-  async signIn(loginDto: LoginDto) {
+  async signIn(loginDto: SignInDto) {
     if (R.isEmpty(loginDto)) throw new Error('No data provided');
 
     const { email, password } = loginDto;

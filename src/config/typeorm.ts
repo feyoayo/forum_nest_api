@@ -1,12 +1,12 @@
-import {registerAs} from '@nestjs/config';
-import {DataSource, DataSourceOptions} from 'typeorm';
+import { registerAs } from '@nestjs/config';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 const config = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
-  username: 'andrew_home_coding',
-  password: '',
+  username: 'postgres',
+  password: '5447',
   database: 'forum',
   synchronize: true,
   migrationsTableName: '',

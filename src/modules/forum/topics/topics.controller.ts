@@ -36,7 +36,7 @@ export class TopicsController extends BaseController {
         ...createTopicDto,
         user_id: user.uid,
       });
-      return this.ok<Topic>(newTopic);
+      return this.created<Topic>(newTopic);
     } catch (error) {
       throw new HttpException(error.message, 400);
     }
@@ -46,7 +46,7 @@ export class TopicsController extends BaseController {
   async findAll() {
     try {
       const topics = await this.topicsService.findAll();
-      return this.response(topics);
+      return this.ok(topics);
     } catch (error) {
       this.error('Something went wrong while getting topics', error);
     }

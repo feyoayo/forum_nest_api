@@ -1,13 +1,13 @@
-import { AuthModule } from './modules/auth/auth.module';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ForumModule } from './modules/forum/forum.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './modules/user/user.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import typeorm from './config/typeorm';
 import { TokenModule } from './common/token/token.module';
+import typeorm from './config/typeorm';
+import { AuthModule } from './modules/auth/auth.module';
+import { ForumModule } from './modules/forum/forum.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [

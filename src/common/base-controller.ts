@@ -1,13 +1,13 @@
 import { HttpException } from '@nestjs/common';
 
 export abstract class BaseController {
-  ok<T>(data: T) {
+  created<T>(data: T) {
     return {
       status: 'created',
       data: data,
     };
   }
-  response<T>(data: T) {
+  ok<T>(data: T) {
     return {
       status: 'created',
       data: data,
