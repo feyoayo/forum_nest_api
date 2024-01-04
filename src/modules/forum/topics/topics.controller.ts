@@ -16,7 +16,9 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { TopicsViewsService } from '../topics_views/topics_views.service';
 import { Request } from 'express';
 import { TokenService } from '../../../common/token/token.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('forum/topics')
 @Controller('forum/topics')
 export class TopicsController extends BaseController {
   constructor(

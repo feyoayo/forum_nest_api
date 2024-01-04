@@ -1,9 +1,9 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { LoginDto } from '../user/dto/login.dto';
-import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { SignInDto } from './dto/sign-in.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,7 +23,7 @@ export class AuthController {
   }
 
   @Post('sign-in')
-  async signIn(@Body() loginDto: LoginDto) {
+  async signIn(@Body() loginDto: SignInDto) {
     try {
       const { access_token } = await this.authService.signIn(loginDto);
 
