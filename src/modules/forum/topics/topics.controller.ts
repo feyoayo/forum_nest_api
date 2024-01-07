@@ -17,6 +17,7 @@ import { TopicsViewsService } from '../topics_views/topics_views.service';
 import { Request } from 'express';
 import { TokenService } from '../../../common/token/token.service';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @ApiTags('forum/topics')
 @Controller('forum/topics')
@@ -29,13 +30,15 @@ export class TopicsController extends BaseController {
     super();
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Req() req: Request, @Body() createTopicDto: CreateTopicDto) {
     try {
       const user = req['user'];
+      console.log(user, '--user');
       const newTopic = await this.topicsService.create({
         ...createTopicDto,
+        // @ts-ignore
         user_id: user.uid,
       });
       return this.created<Topic>(newTopic);

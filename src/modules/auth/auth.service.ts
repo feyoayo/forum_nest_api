@@ -3,15 +3,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto } from '../user/dto/login.dto';
 import { compare, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import * as R from 'ramda';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { isEmpty } from 'lodash';
 
 const SALT_ROUNDS = 8;
 
@@ -41,27 +40,51 @@ export class AuthService {
 
     return this.userRepository.save(userPayload);
   }
-  async signIn(loginDto: SignInDto) {
-    if (R.isEmpty(loginDto)) throw new Error('No data provided');
 
-    const { email, password } = loginDto;
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<null | Omit<User, 'password'>> {
+    const user = await this.userRepository.findOneBy({ email });
 
-    const userCandidate = await this.userRepository.findOneBy({ email });
-
-    if (!userCandidate) {
-      throw new NotFoundException();
+    if (!user) {
+      return null;
     }
 
-    const isAuthAvailable: boolean = await compare(
-      password,
-      userCandidate.password,
-    );
+    const isAuthAvailable: boolean = await compare(password, user.password);
 
     if (!isAuthAvailable) {
-      throw new UnauthorizedException();
+      return null;
     }
 
-    const payload = { uid: userCandidate.id, username: userCandidate.nickname };
+    const { password: userPassword, ...result } = user;
+
+    return result;
+  }
+
+  // async signIn(signInDto: SignInDto) {
+  async signIn(user: User) {
+    // if (isEmpty(signInDto)) throw new Error('No data provided');
+    //
+    // const { email, password } = signInDto;
+    //
+    // const userCandidate = await this.userRepository.findOneBy({ email });
+    //
+    // if (!userCandidate) {
+    //   throw new NotFoundException();
+    // }
+    //
+    // const isAuthAvailable: boolean = await compare(
+    //   password,
+    //   userCandidate.password,
+    // );
+    //
+    // if (!isAuthAvailable) {
+    //   throw new UnauthorizedException();
+    // }
+
+    // const payload = { uid: userCandidate.id, username: userCandidate.nickname };
+    const payload = { sub: user.id, username: user.nickname };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
