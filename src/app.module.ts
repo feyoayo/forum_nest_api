@@ -8,6 +8,7 @@ import typeorm from './config/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { ForumModule } from './modules/forum/forum.module';
 import { UserModule } from './modules/user/user.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     ForumModule,
     UserModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
