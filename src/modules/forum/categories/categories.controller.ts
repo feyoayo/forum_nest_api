@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   Param,
   Patch,
   Post,
@@ -37,8 +36,7 @@ export class CategoriesController extends BaseController {
         this.categoriesService.create(createCategoryDto);
       return this.created(categoryCandidate);
     } catch (e) {
-      console.log(e);
-      throw new HttpException(e.message, 400);
+      this.error(e, 'Error while creating category');
     }
   }
 
@@ -48,8 +46,7 @@ export class CategoriesController extends BaseController {
       const categories = await this.categoriesService.findAll(queryParams);
       return this.ok<Category[]>(categories);
     } catch (e) {
-      console.log(e);
-      throw new HttpException(e.message, 400);
+      this.error(e, 'Error while fetching categories');
     }
   }
 
@@ -59,8 +56,7 @@ export class CategoriesController extends BaseController {
       const category = await this.categoriesService.findOne(+id);
       return this.ok<Category>(category);
     } catch (e) {
-      console.log(e);
-      throw new HttpException(e.message, 400);
+      this.error(e, 'Error while fetching category');
     }
   }
 
@@ -70,7 +66,11 @@ export class CategoriesController extends BaseController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
+    try {
+      return this.categoriesService.update(+id, updateCategoryDto);
+    } catch (e) {
+      this.error(e, 'Error while updating category');
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -83,7 +83,7 @@ export class CategoriesController extends BaseController {
         message: 'Success',
       };
     } catch (e) {
-      console.log(e);
+      this.error(e, 'Error while archiving category');
     }
   }
 
@@ -96,7 +96,7 @@ export class CategoriesController extends BaseController {
         message: 'Success',
       };
     } catch (e) {
-      console.log(e);
+      this.error(e, 'Error while unarchiving category');
     }
   }
 
@@ -109,7 +109,7 @@ export class CategoriesController extends BaseController {
         message: 'Success',
       };
     } catch (e) {
-      throw new HttpException(e.message, 400);
+      this.error(e, 'Error while deleting category');
     }
   }
 }
