@@ -3,15 +3,13 @@ import {
   Controller,
   HttpException,
   Post,
-  UseGuards,
   Request,
+  UseGuards,
 } from '@nestjs/common';
-import { LoginDto } from '../user/dto/login.dto';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { SignInDto } from './dto/sign-in.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('auth')
@@ -35,15 +33,5 @@ export class AuthController {
   @Post('sign-in')
   async signIn(@Body() loginDto: SignInDto, @Request() req) {
     return this.authService.signIn(req.user);
-    // try {
-    //   const { access_token } = await this.authService.signIn(loginDto);
-    //
-    //   return {
-    //     message: 'Login available',
-    //     access_token,
-    //   };
-    // } catch (e) {
-    //   throw new HttpException(e.message, 401);
-    // }
   }
 }

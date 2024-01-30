@@ -30,12 +30,6 @@ class BaseListUtils {
 
 @Injectable()
 export class CategoriesService extends BaseListUtils {
-  private readonly defaultCategoryFields = {
-    id: true,
-    name: true,
-    slug: true,
-    description: true,
-  };
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
@@ -44,6 +38,13 @@ export class CategoriesService extends BaseListUtils {
     this.setDefaultListFields('id,name,slug,description');
   }
   async create(createCategoryDto: CreateCategoryDto) {
+    const candidate = await this.categoryRepository.findOne({
+      where: { name: createCategoryDto.name, slug: createCategoryDto.slug },
+    });
+    if (candidate) {
+      console.log(candidate);
+      throw new Error('Category already exists');
+    }
     return await this.categoryRepository.save(createCategoryDto);
   }
 

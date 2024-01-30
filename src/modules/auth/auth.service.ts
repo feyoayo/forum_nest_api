@@ -1,16 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/sign-up.dto';
-import { SignInDto } from './dto/sign-in.dto';
-import { isEmpty } from 'lodash';
 
 const SALT_ROUNDS = 8;
 
@@ -62,29 +56,8 @@ export class AuthService {
     return result;
   }
 
-  // async signIn(signInDto: SignInDto) {
   async signIn(user: User) {
-    // if (isEmpty(signInDto)) throw new Error('No data provided');
-    //
-    // const { email, password } = signInDto;
-    //
-    // const userCandidate = await this.userRepository.findOneBy({ email });
-    //
-    // if (!userCandidate) {
-    //   throw new NotFoundException();
-    // }
-    //
-    // const isAuthAvailable: boolean = await compare(
-    //   password,
-    //   userCandidate.password,
-    // );
-    //
-    // if (!isAuthAvailable) {
-    //   throw new UnauthorizedException();
-    // }
-
-    // const payload = { uid: userCandidate.id, username: userCandidate.nickname };
-    const payload = { sub: user.id, username: user.nickname };
+    const payload = { sub: user.id, username: user.nickname, role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

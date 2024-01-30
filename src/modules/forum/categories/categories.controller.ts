@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -19,25 +18,16 @@ import { ListRequestParams } from '../../../types/request.types';
 import { BaseController } from '../../../common/base-controller';
 import { Category } from './entities/category.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { RbacGuard } from '../../../common/guards/rbac.guard';
+import { Roles } from '../../../common/decorators/role.decorator';
+import { UserRole } from '../../user/entities/user.entity';
 
 @ApiTags('forum/categories')
 @Controller('forum/categories')
 export class CategoriesController extends BaseController {
   constructor(private readonly categoriesService: CategoriesService) {
     super();
-  }
-
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    try {
-      const categoryCandidate =
-        this.categoriesService.create(createCategoryDto);
-      return this.created(categoryCandidate);
-    } catch (e) {
-      this.error(e, 'Error while creating category');
-    }
   }
 
   @Get()
@@ -60,7 +50,23 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(UserRole.admin)
+  @UseGuards(JwtAuthGuard, RbacGuard)
+  @ApiBearerAuth()
+  @Post()
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    try {
+      const categoryCandidate = await this.categoriesService.create(
+        createCategoryDto,
+      );
+      return this.created(categoryCandidate);
+    } catch (e) {
+      return this.error(e, e.message);
+    }
+  }
+
+  @Roles(UserRole.admin)
+  @UseGuards(AuthGuard, RbacGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -73,7 +79,8 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(UserRole.admin)
+  @UseGuards(AuthGuard, RbacGuard)
   @Put(':id/archive')
   async archive(@Param('id') id: string) {
     try {
@@ -87,7 +94,8 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(UserRole.admin)
+  @UseGuards(AuthGuard, RbacGuard)
   @Put(':id/unarchive')
   async unarchive(@Param('id') id: string) {
     try {
@@ -100,9 +108,10 @@ export class CategoriesController extends BaseController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(UserRole.admin)
+  @UseGuards(AuthGuard, RbacGuard)
   @Delete(':id')
-  async remove(@Res() res, @Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     try {
       await this.categoriesService.remove(+id);
       return {

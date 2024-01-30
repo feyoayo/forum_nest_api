@@ -22,12 +22,15 @@ export class UserService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: number): Promise<User> {
+    return this.userRepository.findOneBy({
+      id,
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    console.log(updateUserDto);
+    return this.userRepository.update(id, updateUserDto);
   }
 
   remove(id: number) {

@@ -9,7 +9,7 @@ export abstract class BaseController {
   }
   ok<T>(data: T) {
     return {
-      status: 'created',
+      status: 'true',
       data: data,
     };
   }
